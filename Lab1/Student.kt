@@ -42,6 +42,16 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
         email = _email
         git = _git
     }
+
+    constructor(hash: Map<String, Any?>): this(
+        hash["firstName"] as String,
+        hash["lastName"] as String,
+        hash["middleName"] as String,
+        hash["id"] as Int?,
+        hash["telephone"] as String?,
+        hash["telegram"] as String?,
+        hash["mail"] as String?
+    )
             
     override fun toString(): String {
         return """
