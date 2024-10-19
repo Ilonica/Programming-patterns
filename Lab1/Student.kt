@@ -18,21 +18,30 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
 
     private var _telegram: String? = null
     var telegram: String?
-        set(value) {
+         set(value) {
+            if (value != null && !telegramValid(value)) {
+                throw IllegalArgumentException("Формат telegram неверный: $value")
+            }
             _telegram = value
         }
         get() = _telegram
 
     private var _email: String? = null
     var email: String?
-        set(value) {
+       set(value) {
+            if (value != null && !emailValid(value)) {
+                throw IllegalArgumentException("Формат e-mail неверный: $value")
+            }
             _email = value
         }
         get() = _email
 
     private var _git: String? = null
     var git: String?
-        set(value) {
+         set(value) {
+            if (value != null && !gitValid(value)) {
+                throw IllegalArgumentException("Формат Git URL неверный: $value")
+            }
             _git = value
         }
         get() = _git
@@ -57,8 +66,34 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
     )
 
     companion object {
+        fun fullNameValid(fullName: String?): Boolean {
+            return fullName != null && fullName.matches(Regex("^[А-ЯЁA-Z][а-яёa-z]+(?: [А-ЯЁA-Z][а-яёa-z]+){0,2}\$"))
+        }
+
         fun phoneValid(phone: String): Boolean {
             return phone.matches(Regex("^\\+?[0-9]{11}\$"))
+        }
+
+        fun telegramValid(telegram: String?): Boolean {
+            return telegram != null && telegram.matches(Regex("^@[A-Za-z0-9_]{5,32}\$"))
+        }
+
+        fun emailValid(email: String?): Boolean {
+            return email != null && email.matches(Regex("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}\$"))
+        }
+
+        fun gitValid(git: String?): Boolean {
+            return git != null && git.matches(Regex("""^https:\/\/(www\.)?(github\.com|gitlab\.com|bitbucket\.org)\/[a-zA-Z0-9\-_]+$"""))
+        }
+    }
+
+    init {
+        validateFullName(lastName, firstName, middleName)
+    }
+    
+    private fun validateFullName(lastName: String, firstName: String, middleName: String) {
+        if (!fullNameValid("$lastName $firstName $middleName")) {
+            throw IllegalArgumentException("Формат ФИО неверный: $lastName $firstName $middleName")
         }
     }
             
@@ -69,7 +104,7 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
             Телефон: ${phone ?: "Не указан"}
             Telegram: ${telegram ?: "Не указан"}
             Email: ${email ?: "Не указан"}
-            GitHub: ${git ?: "Не указан"}
+            Git: ${git ?: "Не указан"}
         """.trimIndent()
     }
 }
