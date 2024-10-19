@@ -42,4 +42,15 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
         email = _email
         git = _git
     }
+            
+    override fun toString(): String {
+        return """
+            id: ${id ?: "Не задан"}
+            ФИО: $lastName $firstName $middleName
+            Телефон: ${phone ?: "Не указан"}
+            Telegram: ${telegram ?: "Не указан"}
+            Email: ${email ?: "Не указан"}
+            GitHub: ${git ?: "Не указан"}
+        """.trimIndent()
+    }
 }
