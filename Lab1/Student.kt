@@ -8,7 +8,10 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
 
     private var _phone: String? = null
     var phone: String?
-        set(value) {
+         set(value) {
+            if (value != null && !phoneValid(value)) {
+                throw IllegalArgumentException("Формат номера телефона неверный: $value")
+            }
             _phone = value
         }
         get() = _phone
@@ -52,6 +55,12 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
         hash["telegram"] as String?,
         hash["mail"] as String?
     )
+
+    companion object {
+        fun phoneValid(phone: String): Boolean {
+            return phone.matches(Regex("^\\+?[0-9]{11}\$"))
+        }
+    }
             
     override fun toString(): String {
         return """
