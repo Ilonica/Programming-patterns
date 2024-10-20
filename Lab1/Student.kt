@@ -53,6 +53,8 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
         telegram = _telegram
         email = _email
         git = _git
+
+        validate()
     }
 
     constructor(hash: Map<String, Any?>): this(
@@ -71,7 +73,7 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
         }
 
         fun phoneValid(phone: String): Boolean {
-            return phone.matches(Regex("^\\+?[0-9]{11}\$"))
+            return phone != null && phone.matches(Regex("^\\+?[0-9]{11}\$"))
         }
 
         fun telegramValid(telegram: String?): Boolean {
@@ -95,6 +97,23 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
         if (!fullNameValid("$lastName $firstName $middleName")) {
             throw IllegalArgumentException("Формат ФИО неверный: $lastName $firstName $middleName")
         }
+    }
+
+    private fun hasContactInfo() {
+        if (phone.isNullOrEmpty() && telegram.isNullOrEmpty() && email.isNullOrEmpty()) {
+            throw IllegalArgumentException("Должен быть указан хотя бы один контакт: $lastName $firstName $middleName")
+        }
+    }
+
+    private fun hasGit() {
+        if (git.isNullOrEmpty()) {
+            throw IllegalArgumentException("Необходимо указать ссылку на Git: $lastName $firstName $middleName")
+        }
+    }
+
+    private fun validate() {
+        hasContactInfo()
+        hasGit()
     }
             
     override fun toString(): String {
