@@ -1,0 +1,36 @@
+@startuml
+class Student {
+    - lastName: String
+    - firstName: String
+    - middleName: String
+    - _id: Int?
+    - _phone: String?
+    - _telegram: String?
+    - _email: String?
+    - _git: String?
+
+    + id: Int?
+    + phone: String?
+    + telegram: String?
+    + email: String?
+    + git: String?
+
+    + Student(lastName: String, firstName: String, middleName: String, _id: Int?, _phone: String?, _telegram: String?, _email: String?, _git: String?)
+    + Student(hash: Map<String, Any?>)
+
+    + setContacts(phone: String?, telegram: String?, email: String?)
+    + toString(): String
+
+    - validateFullName(lastName: String, firstName: String, middleName: String)
+    - hasContactInfo()
+    - hasGit()
+    - validate()
+    
+    {static} + fullNameValid(fullName: String?): Boolean
+    {static} + phoneValid(phone: String): Boolean
+    {static} + telegramValid(telegram: String?): Boolean
+    {static} + emailValid(email: String?): Boolean
+    {static} + gitValid(git: String?): Boolean
+}
+
+@enduml
