@@ -115,6 +115,27 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
         hasContactInfo()
         hasGit()
     }
+
+    fun setContacts(phone: String? = null, telegram: String? = null, email: String? = null) {
+        if (phone != null) {
+            if (!phoneValid(phone)) {
+                throw IllegalArgumentException("Неверный формат телефона: $phone")
+            }
+            this.phone = phone
+        }
+        if (telegram != null) {
+            if (!telegramValid(telegram)) {
+                throw IllegalArgumentException("Неверный формат Telegram: $telegram")
+            }
+            this.telegram = telegram
+        }
+        if (email != null) {
+            if (!emailValid(email)) {
+                throw IllegalArgumentException("Неверный формат email: $email")
+            }
+            this.email = email
+        }
+    }
             
     override fun toString(): String {
         return """
