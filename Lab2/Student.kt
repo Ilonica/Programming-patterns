@@ -67,6 +67,17 @@ class Student(var lastName: String, var firstName: String, var middleName: Strin
         hash["mail"] as String?
     )
 
+    fun getInfo(): String {
+        val initials = "${firstName.firstOrNull() ?: ""}.${middleName.firstOrNull() ?: ""}."
+        val contact = when {
+            !phone.isNullOrBlank() -> "Телефон: $phone"
+            !telegram.isNullOrBlank() -> "Телеграм: $telegram"
+            !email.isNullOrBlank() -> "Почта: $email"
+            else -> "Контактов нет"
+        }
+        return "Фамилия: $lastName $initials, Git: ${git ?: "не указан"}, $contact"
+    }
+    
     companion object {
         fun fromStringToStudent(input: String): Student {
             val parsedData = input.split(";").map { it.trim() }
