@@ -1,0 +1,57 @@
+@startuml
+
+class Person {
+    - id: Int
+    - lastName: String
+    - firstName: String
+    - middleName: String?
+    - git: String?
+    - phone: String?
+    - telegram: String?
+    - email: String?
+
+    + getFullName(): String
+    + getContactInfo(): String
+    + toString(): String
+
+    .. Companion Object ..
+    + isValidPhone(phone: String): Boolean
+    + isValidTelegram(telegram: String): Boolean
+    + isValidEmail(email: String): Boolean
+    + isValidGit(git: String): Boolean
+}
+
+class Student {
+    - lastName: String
+    - firstName: String
+    - middleName: String
+    - id: Int?
+    - phone: String?
+    - telegram: String?
+    - email: String?
+    - git: String?
+
+    + getInfo(): String
+    + toString(): String
+
+    .. Companion Object Validators ..
+    + fullNameValid(fullName: String?): Boolean
+    + phoneValid(phone: String?): Boolean
+    + telegramValid(telegram: String?): Boolean
+    + emailValid(email: String?): Boolean
+    + gitValid(git: String?): Boolean
+}
+
+class StudentShort {
+    - id: Int
+    - fio: String
+    - git: String?
+    - contact: String
+
+    + toString(): String
+}
+
+Person <|-- Student
+Person <|-- StudentShort
+Student --> StudentShort : converts to
+@enduml
