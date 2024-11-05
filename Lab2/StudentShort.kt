@@ -1,47 +1,33 @@
 class StudentShort(
-    val id: Int,
-    val fio: String,
-    val git: String?,
-    val contact: String
-) {
-    // Конструктор, который принимает объект Student
+    id: Int,
+    fio: String,
+    git: String? = null,
+    contact: String = "Контактов нет"
+) : Person(id, fio.split(" ")[0], fio.split(" ")[1], null, git) {
+
+    // Конструктор, принимающий объект класса Student
     constructor(student: Student) : this(
-        id = student.id ?: 0,
-        fio = "${student.lastName} ${student.firstName.firstOrNull() ?: ""}.${student.middleName.firstOrNull() ?: ""}.",
+        id = student.id,
+        fio = student.getFullName(),
         git = student.git,
-        contact = when {
-            !student.phone.isNullOrBlank() -> "Телефон: ${student.phone}"
-            !student.telegram.isNullOrBlank() -> "Телеграм: ${student.telegram}"
-            !student.email.isNullOrBlank() -> "Почта: ${student.email}"
-            else -> "Контактов нет"
-        }
+        contact = student.getContactInfo()
     )
 
-    // Конструктор, который принимает ID и строку с остальной информацией
+    // Конструктор, принимающий ID и строку
     constructor(id: Int, data: String) : this(
         id = id,
-        fio = data.split(";")[0].let {
-            val parts = it.split(" ")
-            if (parts.size >= 2) "${parts[0]} ${parts[1].firstOrNull() ?: ""}." else parts[0]
-        },
-        git = data.split(";").getOrNull(2),
-        contact = data.split(";").getOrNull(3)?.let {
-            when {
-                it.startsWith("+") -> "Телефон: $it"
-                it.startsWith("@") -> "Телеграм: $it"
-                it.contains("@") -> "Почта: $it"
-                else -> "Контактов нет"
-            }
-        } ?: "Контактов нет"
+        fio = data.split(";")[0],
+        git = data.split(";").getOrNull(1),
+        contact = data.split(";").getOrNull(2) ?: "Контактов нет"
     )
 
-    // Метод для отображения информации о студенте
-    fun displayInfo() {
-        println("""
+    // Переопределенный метод для вывода информации
+    override fun toString(): String {
+        return """
             ID: $id
-            ФИО: $fio
+            ФИО: ${getFullName()}
             Git: ${git ?: "не указан"}
             Контакт: $contact
-        """.trimIndent())
+        """.trimIndent()
     }
 }
