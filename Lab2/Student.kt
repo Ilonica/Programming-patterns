@@ -1,3 +1,7 @@
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
+
 class Student(
     var lastName: String,
     var firstName: String,
@@ -70,4 +74,42 @@ class Student(
         Email: ${email ?: "Не указан"}
         Git: ${git ?: "Не указан"}
     """.trimIndent()
+
+    @Throws(IOException::class, IllegalArgumentException::class)
+    companion object {
+        fun readFromTxt(path: String): List<Student> {
+            val file = File(path)
+            if (!file.exists()) {
+                throw FileNotFoundException("Файл по адресу $path не найден.")
+            }
+            val studentList = mutableListOf<Student>()
+            file.forEachLine { line ->
+                try {
+                    // Предполагаем, что строка содержит данные в формате: lastName, firstName, middleName, phone, telegram, email, git
+                    val parts = line.split(",").map { it.trim() }
+                    if (parts.size < 7) {
+                        throw IllegalArgumentException("Недостаточно данных в строке: \"$line\".")
+                    }
+                    val student = Student(
+                        lastName = parts[0],
+                        firstName = parts[1],
+                        middleName = parts[2],
+                        phone = parts[3],
+                        telegram = parts[4],
+                        email = parts[5],
+                        git = parts[6],
+                        id = (Math.random() * 10).toInt() // Генерация id
+                    )
+                    studentList.add(student)
+                } catch (e: IllegalArgumentException) {
+                    // Если строка некорректна, выбрасываем исключение
+                    println("Ошибка в строке: \"$line\". Пропускаем её.")
+                }
+            }
+            if (studentList.isEmpty()) {
+                throw IllegalArgumentException("В файле нет корректных данных для студентов.")
+            }
+            return studentList
+        }
+    }
 }
