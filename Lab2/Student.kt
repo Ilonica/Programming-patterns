@@ -42,41 +42,20 @@ class Student(
         require(!git.isNullOrEmpty()) { "Необходимо указать ссылку на Git" }
     }
 
-    fun getInfo(): String {
-        val initials = "${firstName.firstOrNull() ?: ""}.${middleName.firstOrNull() ?: ""}."
-        val contactInfo = listOfNotNull(
-            "Телефон: $phone",
-            "Телеграм: $telegram",
-            "Почта: $email"
-        ).firstOrNull() ?: "Контактов нет"
-        return "Фамилия: $lastName $initials, Git: ${git ?: "не указан"}, $contactInfo"
-    }
-
     private fun validateFullName() {
         require(fullNameValid("$lastName $firstName $middleName")) { "Неверный формат ФИО" }
     }
 
     private fun hasContactInfo() = !phone.isNullOrEmpty() || !telegram.isNullOrEmpty() || !email.isNullOrEmpty()
 
-    companion object Validators {
+    companion object {
         fun fullNameValid(fullName: String?) = fullName?.matches(Regex("^[А-ЯЁA-Z][а-яёa-z]+(?: [А-ЯЁA-Z][а-яёa-z]+){0,2}\$")) == true
         fun phoneValid(phone: String?) = phone?.matches(Regex("^\\+?[0-9]{11}\$")) == true
         fun telegramValid(telegram: String?) = telegram?.matches(Regex("^@[A-Za-z0-9_]{5,32}\$")) == true
         fun emailValid(email: String?) = email?.matches(Regex("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}\$")) == true
         fun gitValid(git: String?) = git?.matches(Regex("""^https:\/\/(www\.)?(github\.com|gitlab\.com|bitbucket\.org)\/[a-zA-Z0-9\-_]+$""")) == true
-    }
 
-    override fun toString() = """
-        id: ${id ?: "Не задан"}
-        ФИО: $lastName $firstName $middleName
-        Телефон: ${phone ?: "Не указан"}
-        Telegram: ${telegram ?: "Не указан"}
-        Email: ${email ?: "Не указан"}
-        Git: ${git ?: "Не указан"}
-    """.trimIndent()
-
-    @Throws(IOException::class, IllegalArgumentException::class)
-    companion object {
+        @Throws(IOException::class, IllegalArgumentException::class)
         fun readFromTxt(path: String): List<Student> {
             val file = File(path)
             if (!file.exists()) {
@@ -102,14 +81,40 @@ class Student(
                     )
                     studentList.add(student)
                 } catch (e: IllegalArgumentException) {
-                    // Если строка некорректна, выбрасываем исключение
-                    println("Ошибка в строке: \"$line\". Пропускаем её.")
+                    println("Пропускаем строку с ошибкой: \"$line\".")
                 }
             }
             if (studentList.isEmpty()) {
-                throw IllegalArgumentException("В файле нет корректных данных для студентов.")
+                throw IllegalArgumentException("В файле нет корректных данных студентов.")
             }
             return studentList
         }
+
+        @Throws(IOException::class)
+        fun writeToTxt(path: String, students: List<Student>) {
+            val file = File(path)
+            try {
+                file.printWriter().use { writer ->
+                    students.forEach { student ->
+                        writer.println(
+                            "${student.lastName},${student.firstName},${student.middleName}," +
+                                    "${student.phone ?: ""},${student.telegram ?: ""},${student.email ?: ""},${student.git ?: ""}"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                throw IOException("Ошибка записи в файл: ${e.message}")
+            }
+        }
     }
+
+
+    override fun toString() = """
+        id: ${id ?: "Не задан"}
+        ФИО: $lastName $firstName $middleName
+        Телефон: ${phone ?: "Не указан"}
+        Telegram: ${telegram ?: "Не указан"}
+        Email: ${email ?: "Не указан"}
+        Git: ${git ?: "Не указан"}
+    """.trimIndent()
 }
