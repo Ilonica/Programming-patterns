@@ -1,5 +1,4 @@
 @startuml
-
 class Person {
     - id: Int
     - lastName: String
@@ -51,7 +50,36 @@ class StudentShort {
     + toString(): String
 }
 
+class DataTable<T> {
+    - data: Array<Array<T>>
+
+    + getElement(row: Int, col: Int): T
+    + getRowCount(): Int
+    + getColumnCount(): Int
+    + toString(): String
+}
+
+abstract class DataList<T> {
+    - elements: Array<T>
+    - selectedIndices: MutableSet<Int>
+
+    + select(number: Int): void
+    + getSelectedIds(): Int[]
+    + getNames(): Array<String> <<abstract>>
+    + getData(): DataTable<T> <<abstract>>
+    + fetchData(): Array<Array<String?>> <<abstract>>
+    + formatData(data: Array<Array<String?>>): Array<Array<String>> <<abstract>>
+}
+
+class DataListStudentShort {
+    + getNames(): Array<String>
+    + fetchData(): Array<Array<String?>>
+    + formatData(data: Array<Array<String?>>): Array<Array<String>>
+    + getData(): DataTable<String>
+    + printNames(names: Array<String>): void
+}
+
 Person <|-- Student
 Person <|-- StudentShort
 Student --> StudentShort : converts to
-@enduml
+DataList <|-- DataListStudentShort
