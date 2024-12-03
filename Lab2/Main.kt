@@ -1,15 +1,23 @@
 fun main() {
-    val students = listOf(
-        Student("Иванов", "Иван", "Иванович", phone = "+79876543210", email = "ivanov@example.com", git = "https://github.com/ivanov"),
-        Student("Петров", "Петр", "Петрович", telegram = "@petrov", git = "https://github.com/petrov"),
-        Student("Сидоров", "Сидор", "Сидорович", phone = "+79991234567", email = "sidorov@example.com", git = "https://gitlab.com/sidorov")
+    // Создаем несколько объектов StudentShort
+    val students = arrayOf(
+        StudentShort(1, "Иванов И.И.", "https://github.com/ivanov", "Телефон: +123456789"),
+        StudentShort(2, "Петров П.П.", null, "Почта: petrov@example.com"),
+        StudentShort(3, "Сидоров С.С.", "https://gitlab.com/sidorov", "Телеграм: @sidorov")
     )
 
-    val filePath = "students_output.txt"
-    try {
-        Student.writeToTxt(filePath, students)
-        println("Данные успешно записаны в файл $filePath")
-    } catch (e: IOException) {
-        println("Ошибка: ${e.message}")
-    }
+    // Создаем объект DataListStudentShort
+    val dataList = DataListStudentShort(students)
+
+    // Выделяем нескольких студентов
+    dataList.select(0)
+    dataList.select(2)
+
+    // Печатаем заголовки
+    val columnNames = dataList.getNames()
+    dataList.printNames(columnNames)
+
+    // Получаем и печатаем данные таблицы
+    val dataTable = dataList.getData()
+    println(dataTable)
 }
